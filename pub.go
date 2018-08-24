@@ -1,13 +1,16 @@
-package publish
+package main
 
 import (
+	"fmt"
 	"time"
 
 	liftbridge "github.com/liftbridge-io/go-liftbridge"
 	nats "github.com/nats-io/go-nats"
 )
 
-func Pub() {
+func (lbc LiftBridgeClient) Pub() {
+	defer lbc.wg.Done()
+	fmt.Println("real Pub() called")
 	conn, err := nats.GetDefaultOptions().Connect()
 	if err != nil {
 		panic(err)
@@ -23,5 +26,8 @@ func Pub() {
 		}
 		time.Sleep(time.Second * 1)
 	}
+}
 
+func pub(lbcIface EventStreamClient) {
+	lbcIface.Pub()
 }
