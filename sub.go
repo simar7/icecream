@@ -8,6 +8,10 @@ import (
 	lift "github.com/liftbridge-io/go-liftbridge/liftbridge-grpc"
 )
 
+func sub(lbcIface EventStreamClient) {
+	lbcIface.Sub()
+}
+
 func (lbc LiftBridgeClient) Sub() {
 	defer lbc.wg.Done()
 	fmt.Println("real Sub() called")
@@ -17,9 +21,10 @@ func (lbc LiftBridgeClient) Sub() {
 	if err != nil {
 		panic(err)
 	}
-	defer client.Close()
+	lbc.client = client
+	defer lbc.client.Close()
 
-	if err := client.CreateStream(context.Background(), lbc.streamInfo); err != nil {
+	if err := lbc.client.CreateStream(context.Background(), lbc.streamInfo); err != nil {
 		if err != liftbridge.ErrStreamExists {
 			panic(err)
 		}
@@ -38,6 +43,11 @@ func (lbc LiftBridgeClient) Sub() {
 	<-ctx.Done()
 }
 
-func sub(lbcIface EventStreamClient) {
-	lbcIface.Sub()
+func createStream(lbcIface EventStreamClient, ctx context.Context, stream liftbridge.StreamInfo) error {
+	return lbcIface.CreateStream(ctx, stream)
+}
+
+func (lbc LiftBridgeClient) CreateStream(ctx context.Context, stream liftbridge.StreamInfo) error {
+	fmt.Println("real createStream() called")
+	return nil
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"sync"
 
 	liftbridge "github.com/liftbridge-io/go-liftbridge"
@@ -9,12 +10,14 @@ import (
 type EventStreamClient interface {
 	Pub()
 	Sub()
+	CreateStream(context.Context, liftbridge.StreamInfo) error
 }
 
 type LiftBridgeClient struct {
 	wg         *sync.WaitGroup
 	servers    []string
 	streamInfo liftbridge.StreamInfo
+	client     liftbridge.Client
 }
 
 func main() {
