@@ -5,11 +5,13 @@ import (
 	"sync"
 	"testing"
 
+	liftbridge "github.com/liftbridge-io/go-liftbridge"
 	"github.com/stretchr/testify/assert"
 )
 
 type MockLiftBridgeClient struct {
-	wg *sync.WaitGroup
+	wg         *sync.WaitGroup
+	streamInfo liftbridge.StreamInfo
 }
 
 func (mlbc MockLiftBridgeClient) Pub() {
